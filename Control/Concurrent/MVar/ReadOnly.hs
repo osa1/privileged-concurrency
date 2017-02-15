@@ -7,8 +7,10 @@ module Control.Concurrent.MVar.ReadOnly
 , withMVar
 ) where
 
-import qualified Control.Concurrent.MVar as MVar
-import Control.Concurrent.MVar (MVar)
+import           Control.Concurrent.MVar.Lifted (MVar)
+import qualified Control.Concurrent.MVar.Lifted as MVar
+import           Control.Monad.Base
+import           Control.Monad.Trans.Control    (MonadBaseControl)
 
 newtype ReadOnlyMVar a = ReadOnlyMVar (MVar a)
     deriving Eq
@@ -16,18 +18,18 @@ newtype ReadOnlyMVar a = ReadOnlyMVar (MVar a)
 toReadOnlyMVar :: MVar a -> ReadOnlyMVar a
 toReadOnlyMVar = ReadOnlyMVar
 
-takeMVar :: ReadOnlyMVar a -> IO a
+takeMVar :: MonadBase IO m => ReadOnlyMVar a -> m a
 takeMVar (ReadOnlyMVar var) =
   MVar.takeMVar var
 
-readMVar :: ReadOnlyMVar a -> IO a
+readMVar :: MonadBase IO m => ReadOnlyMVar a -> m a
 readMVar (ReadOnlyMVar var) =
   MVar.readMVar var
 
-tryTakeMVar :: ReadOnlyMVar a -> IO (Maybe a)
+tryTakeMVar :: MonadBase IO m => ReadOnlyMVar a -> m (Maybe a)
 tryTakeMVar (ReadOnlyMVar var) =
   MVar.tryTakeMVar var
 
-withMVar :: ReadOnlyMVar a -> (a -> IO b) -> IO b
+withMVar :: MonadBaseControl IO m => ReadOnlyMVar a -> (a -> m b) -> m b
 withMVar (ReadOnlyMVar var) =
   MVar.withMVar var

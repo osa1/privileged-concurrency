@@ -7,7 +7,7 @@ Name:                privileged-concurrency
 -- The package version. See the Haskell package versioning policy
 -- (http://www.haskell.org/haskellwiki/Package_versioning_policy) for
 -- standards guiding when and how versions should be incremented.
-Version:             0.3
+Version:             0.4
 
 -- A short (one-line) description of the package.
 Synopsis: Provides privilege separated versions of the concurrency primitives.
@@ -60,7 +60,15 @@ Library
         Control.Concurrent.STM.TChan.WriteOnly
   
   -- Packages needed in order to build this package.
-  Build-depends: base >= 4 && < 5, stm
+  Build-depends:
+    base >= 4 && < 5,
+    lifted-base,
+    monad-control,
+    stm,
+    transformers-base
+
+  default-extensions: FlexibleContexts
+  ghc-options: -Wall -O2
   
   -- Modules not exported by this package.
   -- Other-modules:       

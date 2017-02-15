@@ -1,12 +1,13 @@
-module Control.Concurrent.MVar.WriteOnly 
+module Control.Concurrent.MVar.WriteOnly
 ( WriteOnlyMVar
 , toWriteOnlyMVar
 , putMVar
 , tryPutMVar
 ) where
 
-import qualified Control.Concurrent.MVar as MVar
-import Control.Concurrent.MVar (MVar)
+import           Control.Concurrent.MVar.Lifted (MVar)
+import qualified Control.Concurrent.MVar.Lifted as MVar
+import           Control.Monad.Base
 
 newtype WriteOnlyMVar a = WriteOnlyMVar (MVar a)
     deriving Eq
@@ -14,10 +15,10 @@ newtype WriteOnlyMVar a = WriteOnlyMVar (MVar a)
 toWriteOnlyMVar :: MVar a -> WriteOnlyMVar a
 toWriteOnlyMVar = WriteOnlyMVar
 
-putMVar :: WriteOnlyMVar a -> a -> IO ()
+putMVar :: MonadBase IO m => WriteOnlyMVar a -> a -> m ()
 putMVar (WriteOnlyMVar var) =
   MVar.putMVar var
 
-tryPutMVar :: WriteOnlyMVar a -> a -> IO Bool
+tryPutMVar :: MonadBase IO m => WriteOnlyMVar a -> a -> m Bool
 tryPutMVar (WriteOnlyMVar var) =
   MVar.tryPutMVar var

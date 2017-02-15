@@ -10,7 +10,6 @@
 module Control.Concurrent.Privileged (
 -- * Privelege Seperated Concurrent Haskell
 
-module Control.Concurrent.Privileged,
 module Control.Concurrent.Chan.ReadOnly,
 module Control.Concurrent.Chan.WriteOnly,
 module Control.Concurrent.MVar.ReadOnly,
