@@ -1,3 +1,5 @@
+{-# LANGUAGE ExistentialQuantification #-}
+
 module Control.Concurrent.STM.TChan.ReadOnly
 ( ReadOnlyTChan
 , toReadOnlyTChan
@@ -5,20 +7,20 @@ module Control.Concurrent.STM.TChan.ReadOnly
 , dupReadOnlyTChan
 ) where
 
-import Control.Concurrent.STM (STM)
+import           Control.Concurrent.STM       (STM)
+import           Control.Concurrent.STM.TChan (TChan)
 import qualified Control.Concurrent.STM.TChan as TChan
-import Control.Concurrent.STM.TChan (TChan)
 
-newtype ReadOnlyTChan a = ReadOnlyTChan (TChan a)
-                     
+data ReadOnlyTChan b = forall a . ReadOnlyTChan (TChan a) (a -> b)
+
 toReadOnlyTChan :: TChan a -> ReadOnlyTChan a
-toReadOnlyTChan = ReadOnlyTChan
+toReadOnlyTChan chan = ReadOnlyTChan chan id
 
 readTChan :: ReadOnlyTChan a -> STM a
-readTChan (ReadOnlyTChan chan) =
-  TChan.readTChan chan
+readTChan (ReadOnlyTChan chan f) =
+  f <$> TChan.readTChan chan
 
 dupReadOnlyTChan :: ReadOnlyTChan a -> STM (ReadOnlyTChan a)
-dupReadOnlyTChan (ReadOnlyTChan chan) = do
+dupReadOnlyTChan (ReadOnlyTChan chan f) = do
   dup <- TChan.dupTChan chan
-  return (toReadOnlyTChan dup)
+  return (ReadOnlyTChan dup f)

@@ -1,3 +1,5 @@
+{-# LANGUAGE ExistentialQuantification #-}
+
 module Control.Concurrent.STM.TVar.ReadOnly
 ( ReadOnlyTVar
 , toReadOnlyTVar
@@ -5,20 +7,19 @@ module Control.Concurrent.STM.TVar.ReadOnly
 , readTVarIO
 ) where
 
-import Control.Concurrent.STM (STM)
+import           Control.Concurrent.STM      (STM)
+import           Control.Concurrent.STM.TVar (TVar)
 import qualified Control.Concurrent.STM.TVar as TVar
-import Control.Concurrent.STM.TVar (TVar)
 
-newtype ReadOnlyTVar a = ReadOnlyTVar (TVar a)
-    deriving Eq
+data ReadOnlyTVar b = forall a . ReadOnlyTVar (TVar a) (a -> b)
 
 toReadOnlyTVar :: TVar a -> ReadOnlyTVar a
-toReadOnlyTVar = ReadOnlyTVar
+toReadOnlyTVar var = ReadOnlyTVar var id
 
 readTVar :: ReadOnlyTVar a -> STM a
-readTVar (ReadOnlyTVar var) =
-  TVar.readTVar var
-  
+readTVar (ReadOnlyTVar var f) =
+  f <$> TVar.readTVar var
+
 readTVarIO :: ReadOnlyTVar a -> IO a
-readTVarIO (ReadOnlyTVar var) =
-  TVar.readTVarIO var
+readTVarIO (ReadOnlyTVar var f) =
+  f <$> TVar.readTVarIO var

@@ -1,3 +1,8 @@
+0.5
+---
+
+* Read-only types are no longer `Eq`, but are now functors.
+
 0.4
 ---
 

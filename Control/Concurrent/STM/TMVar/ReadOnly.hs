@@ -1,3 +1,5 @@
+{-# LANGUAGE ExistentialQuantification #-}
+
 module Control.Concurrent.STM.TMVar.ReadOnly
 ( ReadOnlyTMVar
 , toReadOnlyTMVar
@@ -7,28 +9,27 @@ module Control.Concurrent.STM.TMVar.ReadOnly
 , isEmptyTMVar
 ) where
 
-import Control.Concurrent.STM (STM)
+import           Control.Concurrent.STM       (STM)
+import           Control.Concurrent.STM.TMVar (TMVar)
 import qualified Control.Concurrent.STM.TMVar as TMVar
-import Control.Concurrent.STM.TMVar (TMVar)
 
-newtype ReadOnlyTMVar a = ReadOnlyTMVar (TMVar a)
-                      deriving Eq
+data ReadOnlyTMVar b = forall a . ReadOnlyTMVar (TMVar a) (a -> b)
 
 toReadOnlyTMVar :: TMVar a -> ReadOnlyTMVar a
-toReadOnlyTMVar = ReadOnlyTMVar
+toReadOnlyTMVar var = ReadOnlyTMVar var id
 
 takeTMVar :: ReadOnlyTMVar a -> STM a
-takeTMVar (ReadOnlyTMVar var) =
-  TMVar.takeTMVar var
+takeTMVar (ReadOnlyTMVar var f) =
+  f <$> TMVar.takeTMVar var
 
 readTMVar :: ReadOnlyTMVar a -> STM a
-readTMVar (ReadOnlyTMVar var) =
-  TMVar.readTMVar var
+readTMVar (ReadOnlyTMVar var f) =
+  f <$> TMVar.readTMVar var
 
 tryTakeTMVar :: ReadOnlyTMVar a -> STM (Maybe a)
-tryTakeTMVar (ReadOnlyTMVar var) =
-  TMVar.tryTakeTMVar var
-  
+tryTakeTMVar (ReadOnlyTMVar var f) =
+  fmap f <$> TMVar.tryTakeTMVar var
+
 isEmptyTMVar :: (ReadOnlyTMVar a) -> STM Bool
-isEmptyTMVar (ReadOnlyTMVar var) =
+isEmptyTMVar (ReadOnlyTMVar var _) =
   TMVar.isEmptyTMVar var
