@@ -3,7 +3,7 @@
 }:
 mkDerivation {
   pname = "privileged-concurrency";
-  version = "0.4";
+  version = "0.5";
   src = ./.;
   libraryHaskellDepends = [
     base lifted-base monad-control stm transformers-base
