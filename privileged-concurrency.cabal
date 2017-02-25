@@ -18,7 +18,7 @@ Build-type:          Simple
 Cabal-version:       >=1.10
 
 Extra-source-files:
-  CHANGELOG.markdown
+  CHANGELOG.md
 
 source-repository head
   type: git
