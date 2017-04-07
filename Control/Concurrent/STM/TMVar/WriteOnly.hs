@@ -1,3 +1,5 @@
+{-# LANGUAGE ExistentialQuantification #-}
+
 module Control.Concurrent.STM.TMVar.WriteOnly
 ( WriteOnlyTMVar
 , toWriteOnlyTMVar
@@ -6,24 +8,27 @@ module Control.Concurrent.STM.TMVar.WriteOnly
 , isEmptyWriteOnlyTMVar
 ) where
 
-import Control.Concurrent.STM (STM)
+import           Control.Concurrent.STM       (STM)
+import           Control.Concurrent.STM.TMVar (TMVar)
 import qualified Control.Concurrent.STM.TMVar as TMVar
-import Control.Concurrent.STM.TMVar (TMVar)
+import           Data.Functor.Contravariant
 
-newtype WriteOnlyTMVar a = WriteOnlyTMVar (TMVar a)
-    deriving Eq
+data WriteOnlyTMVar a = forall b . WriteOnlyTMVar (a -> b) (TMVar b)
+
+instance Contravariant WriteOnlyTMVar where
+  contramap f (WriteOnlyTMVar f' var) = WriteOnlyTMVar (f' . f) var
 
 toWriteOnlyTMVar :: TMVar a -> WriteOnlyTMVar a
-toWriteOnlyTMVar = WriteOnlyTMVar
+toWriteOnlyTMVar = WriteOnlyTMVar id
 
 putTMVar :: WriteOnlyTMVar a -> a -> STM ()
-putTMVar (WriteOnlyTMVar var) =
-  TMVar.putTMVar var
+putTMVar (WriteOnlyTMVar f var) =
+  TMVar.putTMVar var . f
 
 tryPutTMVar :: WriteOnlyTMVar a -> a -> STM Bool
-tryPutTMVar (WriteOnlyTMVar var) =
-  TMVar.tryPutTMVar var
+tryPutTMVar (WriteOnlyTMVar f var) =
+  TMVar.tryPutTMVar var . f
 
 isEmptyWriteOnlyTMVar :: (WriteOnlyTMVar a) -> STM Bool
-isEmptyWriteOnlyTMVar (WriteOnlyTMVar var) =
+isEmptyWriteOnlyTMVar (WriteOnlyTMVar _ var) =
   TMVar.isEmptyTMVar var

@@ -1,5 +1,5 @@
 Name:                privileged-concurrency
-Version:             0.5
+Version:             0.6
 Synopsis:            Provides privilege separated versions of the concurrency primitives.
 
 Description:
@@ -40,6 +40,7 @@ Library
 
   Build-depends:
     base >= 4 && < 5,
+    contravariant,
     lifted-base,
     monad-control,
     stm,

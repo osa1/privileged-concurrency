@@ -1,3 +1,8 @@
+0.6
+---
+
+* Write-only types are no longer `Eq`, but are now contravariant functors.
+
 0.5
 ---
 
