@@ -5,6 +5,7 @@ module Control.Concurrent.MVar.ReadOnly
 , toReadOnlyMVar
 , takeMVar
 , readMVar
+, tryReadMVar
 , tryTakeMVar
 , withMVar
 ) where
@@ -29,6 +30,10 @@ takeMVar (ReadOnlyMVar var f) =
 readMVar :: MonadBase IO m => ReadOnlyMVar a -> m a
 readMVar (ReadOnlyMVar var f) =
   f <$> MVar.readMVar var
+
+tryReadMVar :: MonadBase IO m => ReadOnlyMVar a -> m (Maybe a)
+tryReadMVar (ReadOnlyMVar var f) =
+  fmap f <$> MVar.tryReadMVar var
 
 tryTakeMVar :: MonadBase IO m => ReadOnlyMVar a -> m (Maybe a)
 tryTakeMVar (ReadOnlyMVar var f) =

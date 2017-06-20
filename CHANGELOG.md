@@ -1,3 +1,8 @@
+0.6.1
+-----
+
+* Added `tryReadMVar` for read-only `MVar`s.
+
 0.6
 ---
 
