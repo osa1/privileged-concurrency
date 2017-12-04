@@ -1,3 +1,8 @@
+0.6.2
+-----
+
+* Added `tryReadTChan`, `peekTChan` and `tryPeekTChan` for read-only `TChan`s.
+
 0.6.1
 -----
 
