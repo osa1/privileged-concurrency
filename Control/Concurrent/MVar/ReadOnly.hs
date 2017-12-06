@@ -41,4 +41,4 @@ tryTakeMVar (ReadOnlyMVar var f) =
 
 withMVar :: MonadBaseControl IO m => ReadOnlyMVar a -> (a -> m b) -> m b
 withMVar (ReadOnlyMVar var f) w =
-  MVar.withMVar var $ \var' -> w (f var')
+  MVar.withMVar var (w . f)

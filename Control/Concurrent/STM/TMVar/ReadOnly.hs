@@ -30,6 +30,6 @@ tryTakeTMVar :: ReadOnlyTMVar a -> STM (Maybe a)
 tryTakeTMVar (ReadOnlyTMVar var f) =
   fmap f <$> TMVar.tryTakeTMVar var
 
-isEmptyTMVar :: (ReadOnlyTMVar a) -> STM Bool
+isEmptyTMVar :: ReadOnlyTMVar a -> STM Bool
 isEmptyTMVar (ReadOnlyTMVar var _) =
   TMVar.isEmptyTMVar var

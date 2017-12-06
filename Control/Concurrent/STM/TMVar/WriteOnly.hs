@@ -29,6 +29,6 @@ tryPutTMVar :: WriteOnlyTMVar a -> a -> STM Bool
 tryPutTMVar (WriteOnlyTMVar f var) =
   TMVar.tryPutTMVar var . f
 
-isEmptyWriteOnlyTMVar :: (WriteOnlyTMVar a) -> STM Bool
+isEmptyWriteOnlyTMVar :: WriteOnlyTMVar a -> STM Bool
 isEmptyWriteOnlyTMVar (WriteOnlyTMVar _ var) =
   TMVar.isEmptyTMVar var
