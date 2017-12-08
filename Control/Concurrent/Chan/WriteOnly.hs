@@ -1,35 +1,31 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
 module Control.Concurrent.Chan.WriteOnly
-( WriteOnlyChan
-, toWriteOnlyChan
-, writeChan
-, dupWriteOnlyChan
-, writeList2Chan
-) where
+  ( WriteOnlyChan
+  , toWriteOnlyChan
+  ) where
 
-import           Control.Concurrent.Chan.Lifted (Chan)
-import qualified Control.Concurrent.Chan.Lifted as Chan
-import           Control.Monad.Base
-import           Data.Functor.Contravariant
+import Control.Concurrent.Chan.Class
+import Data.Functor.Contravariant
+import qualified UnliftIO.Chan as Chan
 
-data WriteOnlyChan a = forall b . WriteOnlyChan (a -> b) (Chan b)
+data WriteOnlyChan a = forall b . WriteOnlyChan (a -> b) (Chan.Chan b)
 
 instance Contravariant WriteOnlyChan where
   contramap f (WriteOnlyChan f' c) = WriteOnlyChan (f' . f) c
 
-toWriteOnlyChan :: Chan a -> WriteOnlyChan a
+toWriteOnlyChan :: Chan.Chan a -> WriteOnlyChan a
 toWriteOnlyChan = WriteOnlyChan id
 
-writeChan :: MonadBase IO m => WriteOnlyChan a -> a -> m ()
-writeChan (WriteOnlyChan f chan) =
-  Chan.writeChan chan . f
+instance ChanDup WriteOnlyChan where
+    dupChan (WriteOnlyChan f chan) = do
+      chan' <- Chan.dupChan chan
+      return (WriteOnlyChan f chan')
+    {-# INLINE dupChan #-}
 
-dupWriteOnlyChan :: MonadBase IO m => WriteOnlyChan a -> m (WriteOnlyChan a)
-dupWriteOnlyChan (WriteOnlyChan f chan) = do
-  dup <- Chan.dupChan chan
-  return (WriteOnlyChan f dup)
+instance ChanWrite WriteOnlyChan where
+    writeChan (WriteOnlyChan f chan) = Chan.writeChan chan . f
+    {-# INLINE writeChan #-}
 
-writeList2Chan :: MonadBase IO m => WriteOnlyChan a -> [a] -> m ()
-writeList2Chan (WriteOnlyChan f chan) =
-  Chan.writeList2Chan chan . map f
+    writeList2Chan (WriteOnlyChan f chan) = Chan.writeList2Chan chan . map f
+    {-# INLINE writeList2Chan #-}

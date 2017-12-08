@@ -1,34 +1,27 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
 module Control.Concurrent.Chan.ReadOnly
-( ReadOnlyChan
-, toReadOnlyChan
-, readChan
-, dupReadOnlyChan
-, getChanContents
-) where
+  ( ReadOnlyChan
+  , toReadOnlyChan
+  ) where
 
-import           Control.Concurrent.Chan.Lifted (Chan)
-import qualified Control.Concurrent.Chan.Lifted as Chan
-import           Control.Monad.Base
+import qualified UnliftIO.Chan as Chan
+import Control.Concurrent.Chan.Class
 
-data ReadOnlyChan b = forall a . ReadOnlyChan (Chan a) (a -> b)
+data ReadOnlyChan b = forall a . ReadOnlyChan (Chan.Chan a) (a -> b)
 
 instance Functor ReadOnlyChan where
   fmap f (ReadOnlyChan c f') = ReadOnlyChan c (f . f')
 
-toReadOnlyChan :: Chan a -> ReadOnlyChan a
+toReadOnlyChan :: Chan.Chan a -> ReadOnlyChan a
 toReadOnlyChan c = ReadOnlyChan c id
 
-readChan :: MonadBase IO m => ReadOnlyChan a -> m a
-readChan (ReadOnlyChan chan f) =
-  f <$> Chan.readChan chan
+instance ChanDup ReadOnlyChan where
+    dupChan (ReadOnlyChan chan f) = do
+      chan' <- Chan.dupChan chan
+      return (ReadOnlyChan chan' f)
+    {-# INLINE dupChan #-}
 
-dupReadOnlyChan :: MonadBase IO m => ReadOnlyChan a -> m (ReadOnlyChan a)
-dupReadOnlyChan (ReadOnlyChan chan f) = do
-  dup <- Chan.dupChan chan
-  return (ReadOnlyChan dup f)
-
-getChanContents :: MonadBase IO m => ReadOnlyChan a -> m [a]
-getChanContents (ReadOnlyChan chan f) =
-  fmap f <$> Chan.getChanContents chan
+instance ChanRead ReadOnlyChan where
+    readChan (ReadOnlyChan chan f) = f <$> Chan.readChan chan
+    {-# INLINE readChan #-}

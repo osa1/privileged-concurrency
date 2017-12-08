@@ -8,10 +8,12 @@
 -- Privilege separated concurrency abstractions.
 
 module Control.Concurrent.Privileged (
--- * Privelege Seperated Concurrent Haskell
+-- * Privilege Separated Concurrent Haskell
 
+module Control.Concurrent.Chan.Class,
 module Control.Concurrent.Chan.ReadOnly,
 module Control.Concurrent.Chan.WriteOnly,
+module Control.Concurrent.MVar.Class,
 module Control.Concurrent.MVar.ReadOnly,
 module Control.Concurrent.MVar.WriteOnly,
 module Control.Concurrent.STM.TVar.ReadOnly,
@@ -22,8 +24,10 @@ module Control.Concurrent.STM.TChan.ReadOnly,
 module Control.Concurrent.STM.TChan.WriteOnly
 ) where
 
+import Control.Concurrent.Chan.Class
 import Control.Concurrent.Chan.ReadOnly
 import Control.Concurrent.Chan.WriteOnly
+import Control.Concurrent.MVar.Class
 import Control.Concurrent.MVar.ReadOnly
 import Control.Concurrent.MVar.WriteOnly
 import Control.Concurrent.STM.TVar.ReadOnly
