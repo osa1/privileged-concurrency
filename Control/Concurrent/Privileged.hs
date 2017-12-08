@@ -9,7 +9,6 @@
 
 module Control.Concurrent.Privileged (
 -- * Privilege Separated Concurrent Haskell
-
 module Control.Concurrent.Chan.Class,
 module Control.Concurrent.Chan.ReadOnly,
 module Control.Concurrent.Chan.WriteOnly,
@@ -21,7 +20,23 @@ module Control.Concurrent.STM.TVar.WriteOnly,
 module Control.Concurrent.STM.TMVar.ReadOnly,
 module Control.Concurrent.STM.TMVar.WriteOnly,
 module Control.Concurrent.STM.TChan.ReadOnly,
-module Control.Concurrent.STM.TChan.WriteOnly
+module Control.Concurrent.STM.TChan.WriteOnly,
+-- * Re-exports
+module Control.Monad.IO.Class,
+Chan.Chan,
+Chan.newChan,
+MVar.modifyMVar,
+MVar.modifyMVar_,
+MVar.MVar,
+MVar.newEmptyMVar,
+MVar.newMVar,
+TChan.newTChan,
+TChan.TChan,
+TMVar.newEmptyTMVar,
+TMVar.newTMVar,
+TMVar.TMVar,
+TVar.newTVar,
+TVar.TVar
 ) where
 
 import Control.Concurrent.Chan.Class
@@ -30,12 +45,18 @@ import Control.Concurrent.Chan.WriteOnly
 import Control.Concurrent.MVar.Class
 import Control.Concurrent.MVar.ReadOnly
 import Control.Concurrent.MVar.WriteOnly
-import Control.Concurrent.STM.TVar.ReadOnly
-import Control.Concurrent.STM.TVar.WriteOnly
-import Control.Concurrent.STM.TMVar.ReadOnly
-import Control.Concurrent.STM.TMVar.WriteOnly
+import qualified Control.Concurrent.STM.TChan as TChan
 import Control.Concurrent.STM.TChan.ReadOnly
 import Control.Concurrent.STM.TChan.WriteOnly
+import qualified Control.Concurrent.STM.TMVar as TMVar
+import Control.Concurrent.STM.TMVar.ReadOnly
+import Control.Concurrent.STM.TMVar.WriteOnly
+import qualified Control.Concurrent.STM.TVar as TVar
+import Control.Concurrent.STM.TVar.ReadOnly
+import Control.Concurrent.STM.TVar.WriteOnly
+import Control.Monad.IO.Class
+import qualified UnliftIO.Chan as Chan
+import qualified UnliftIO.MVar as MVar
 
 {- $intro
 

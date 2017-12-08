@@ -1,3 +1,13 @@
+0.7.0
+-----
+
+* Added `Control.Concurrent...Class` modules with typeclasses for overloaded
+  operations. Functions like `putMVar` now work on both `WriteOnlyMVar` and
+  `MVar`.
+
+* Export list updated. Importing `Control.Concurrent.Privilege` should now be
+  enough for all use cases.
+
 0.6.2
 -----
 
