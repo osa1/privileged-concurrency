@@ -1,19 +1,12 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
 module Control.Concurrent.MVar.ReadOnly
-( ReadOnlyMVar
-, toReadOnlyMVar
-, takeMVar
-, readMVar
-, tryReadMVar
-, tryTakeMVar
-, withMVar
-) where
+  ( ReadOnlyMVar
+  , toReadOnlyMVar
+  ) where
 
-import           Control.Concurrent.MVar.Lifted (MVar)
-import qualified Control.Concurrent.MVar.Lifted as MVar
-import           Control.Monad.Base
-import           Control.Monad.Trans.Control    (MonadBaseControl)
+import Control.Concurrent.MVar (MVar)
+import Control.Concurrent.MVar.Class
 
 data ReadOnlyMVar b = forall a . ReadOnlyMVar (MVar a) (a -> b)
 
@@ -23,22 +16,18 @@ instance Functor ReadOnlyMVar where
 toReadOnlyMVar :: MVar a -> ReadOnlyMVar a
 toReadOnlyMVar var = ReadOnlyMVar var id
 
-takeMVar :: MonadBase IO m => ReadOnlyMVar a -> m a
-takeMVar (ReadOnlyMVar var f) =
-  f <$> MVar.takeMVar var
+instance MVarRead ReadOnlyMVar where
+    takeMVar (ReadOnlyMVar var f) = f <$> takeMVar var
+    {-# INLINE takeMVar #-}
 
-readMVar :: MonadBase IO m => ReadOnlyMVar a -> m a
-readMVar (ReadOnlyMVar var f) =
-  f <$> MVar.readMVar var
+    readMVar (ReadOnlyMVar var f) = f <$> readMVar var
+    {-# INLINE readMVar #-}
 
-tryReadMVar :: MonadBase IO m => ReadOnlyMVar a -> m (Maybe a)
-tryReadMVar (ReadOnlyMVar var f) =
-  fmap f <$> MVar.tryReadMVar var
+    tryReadMVar (ReadOnlyMVar var f) = fmap f <$> tryReadMVar var
+    {-# INLINE tryReadMVar #-}
 
-tryTakeMVar :: MonadBase IO m => ReadOnlyMVar a -> m (Maybe a)
-tryTakeMVar (ReadOnlyMVar var f) =
-  fmap f <$> MVar.tryTakeMVar var
+    tryTakeMVar (ReadOnlyMVar var f) = fmap f <$> tryTakeMVar var
+    {-# INLINE tryTakeMVar #-}
 
-withMVar :: MonadBaseControl IO m => ReadOnlyMVar a -> (a -> m b) -> m b
-withMVar (ReadOnlyMVar var f) w =
-  MVar.withMVar var (w . f)
+    withMVar (ReadOnlyMVar var f) w = withMVar var (w . f)
+    {-# INLINE withMVar #-}

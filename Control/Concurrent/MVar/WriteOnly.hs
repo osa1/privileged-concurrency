@@ -1,16 +1,13 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
 module Control.Concurrent.MVar.WriteOnly
-( WriteOnlyMVar
-, toWriteOnlyMVar
-, putMVar
-, tryPutMVar
-) where
+  ( WriteOnlyMVar
+  , toWriteOnlyMVar
+  ) where
 
-import           Control.Concurrent.MVar.Lifted (MVar)
-import qualified Control.Concurrent.MVar.Lifted as MVar
-import           Control.Monad.Base
-import           Data.Functor.Contravariant
+import Control.Concurrent.MVar (MVar)
+import Control.Concurrent.MVar.Class
+import Data.Functor.Contravariant
 
 data WriteOnlyMVar a = forall b . WriteOnlyMVar (a -> b) (MVar b)
 
@@ -20,10 +17,9 @@ instance Contravariant WriteOnlyMVar where
 toWriteOnlyMVar :: MVar a -> WriteOnlyMVar a
 toWriteOnlyMVar = WriteOnlyMVar id
 
-putMVar :: MonadBase IO m => WriteOnlyMVar a -> a -> m ()
-putMVar (WriteOnlyMVar f var) =
-  MVar.putMVar var . f
+instance MVarWrite WriteOnlyMVar where
+    putMVar (WriteOnlyMVar f var) a = putMVar var (f a)
+    {-# INLINE putMVar #-}
 
-tryPutMVar :: MonadBase IO m => WriteOnlyMVar a -> a -> m Bool
-tryPutMVar (WriteOnlyMVar f var) =
-  MVar.tryPutMVar var . f
+    tryPutMVar (WriteOnlyMVar f var) a = tryPutMVar var (f a)
+    {-# INLINE tryPutMVar #-}

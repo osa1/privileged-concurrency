@@ -1,17 +1,13 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
 module Control.Concurrent.STM.TMVar.WriteOnly
-( WriteOnlyTMVar
-, toWriteOnlyTMVar
-, putTMVar
-, tryPutTMVar
-, isEmptyWriteOnlyTMVar
-) where
+  ( WriteOnlyTMVar
+  , toWriteOnlyTMVar
+  ) where
 
-import           Control.Concurrent.STM       (STM)
-import           Control.Concurrent.STM.TMVar (TMVar)
-import qualified Control.Concurrent.STM.TMVar as TMVar
-import           Data.Functor.Contravariant
+import Control.Concurrent.STM.TMVar (TMVar)
+import Control.Concurrent.STM.TMVar.Class
+import Data.Functor.Contravariant
 
 data WriteOnlyTMVar a = forall b . WriteOnlyTMVar (a -> b) (TMVar b)
 
@@ -21,14 +17,9 @@ instance Contravariant WriteOnlyTMVar where
 toWriteOnlyTMVar :: TMVar a -> WriteOnlyTMVar a
 toWriteOnlyTMVar = WriteOnlyTMVar id
 
-putTMVar :: WriteOnlyTMVar a -> a -> STM ()
-putTMVar (WriteOnlyTMVar f var) =
-  TMVar.putTMVar var . f
+instance TMVarWrite WriteOnlyTMVar where
+    putTMVar (WriteOnlyTMVar f var) = putTMVar var . f
+    {-# INLINE putTMVar #-}
 
-tryPutTMVar :: WriteOnlyTMVar a -> a -> STM Bool
-tryPutTMVar (WriteOnlyTMVar f var) =
-  TMVar.tryPutTMVar var . f
-
-isEmptyWriteOnlyTMVar :: WriteOnlyTMVar a -> STM Bool
-isEmptyWriteOnlyTMVar (WriteOnlyTMVar _ var) =
-  TMVar.isEmptyTMVar var
+    tryPutTMVar (WriteOnlyTMVar f var) = tryPutTMVar var . f
+    {-# INLINE tryPutTMVar #-}

@@ -1,18 +1,13 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
 module Control.Concurrent.STM.TChan.WriteOnly
-( WriteOnlyTChan
-, toWriteOnlyTChan
-, writeTChan
-, dupWriteOnlyTChan
-, unGetTChan
-, isEmptyTChan
-) where
+  ( WriteOnlyTChan
+  , toWriteOnlyTChan
+  ) where
 
-import           Control.Concurrent.STM       (STM)
-import           Control.Concurrent.STM.TChan (TChan)
-import qualified Control.Concurrent.STM.TChan as TChan
-import           Data.Functor.Contravariant
+import Control.Concurrent.STM.TChan (TChan)
+import Control.Concurrent.STM.TChan.Class
+import Data.Functor.Contravariant
 
 data WriteOnlyTChan a = forall b . WriteOnlyTChan (a -> b) (TChan b)
 
@@ -22,19 +17,15 @@ instance Contravariant WriteOnlyTChan where
 toWriteOnlyTChan :: TChan a -> WriteOnlyTChan a
 toWriteOnlyTChan = WriteOnlyTChan id
 
-writeTChan :: WriteOnlyTChan a -> a -> STM ()
-writeTChan (WriteOnlyTChan f chan) =
-  TChan.writeTChan chan . f
+instance TChanDup WriteOnlyTChan where
+    dupTChan (WriteOnlyTChan f chan) = WriteOnlyTChan f <$> dupTChan chan
 
-dupWriteOnlyTChan :: WriteOnlyTChan a -> STM (WriteOnlyTChan a)
-dupWriteOnlyTChan (WriteOnlyTChan f chan) = do
-  dup <- TChan.dupTChan chan
-  return (WriteOnlyTChan f dup)
+instance TChanWrite WriteOnlyTChan where
+    writeTChan (WriteOnlyTChan f chan) = writeTChan chan . f
+    {-# INLINE writeTChan #-}
 
-unGetTChan :: WriteOnlyTChan a -> a -> STM ()
-unGetTChan (WriteOnlyTChan f chan) =
-  TChan.unGetTChan chan . f
+    unGetTChan (WriteOnlyTChan f chan) = unGetTChan chan . f
+    {-# INLINE unGetTChan #-}
 
-isEmptyTChan :: WriteOnlyTChan a -> STM Bool
-isEmptyTChan (WriteOnlyTChan _ chan) =
-  TChan.isEmptyTChan chan
+    isEmptyTChan (WriteOnlyTChan _ chan) = isEmptyTChan chan
+    {-# INLINE isEmptyTChan #-}
