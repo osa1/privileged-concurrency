@@ -1,7 +1,7 @@
 -- | Module: Control.Concurrent.Privileged
 -- Copyright: (c) Jeff Shaw 2012
 -- License: BSD, see the file LICENSE
--- Maintainer: shawjef3@msu.edu
+-- Maintainer: omeragacan@gmail.com
 -- Stability: experimental
 -- Portability: non-portable (concurrency)
 --

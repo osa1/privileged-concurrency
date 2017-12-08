@@ -1,7 +1,7 @@
 module Control.Concurrent.MVar.Class where
 
-import qualified UnliftIO.MVar as MVar
 import Control.Monad.IO.Unlift
+import qualified UnliftIO.MVar as MVar
 
 class MVarWrite var where
     putMVar :: MonadIO m => var a -> a -> m ()

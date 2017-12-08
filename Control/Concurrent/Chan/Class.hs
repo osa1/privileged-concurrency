@@ -1,7 +1,7 @@
 module Control.Concurrent.Chan.Class where
 
-import qualified UnliftIO.Chan as Chan
 import Control.Monad.IO.Unlift
+import qualified UnliftIO.Chan as Chan
 
 class ChanDup chan where
     dupChan :: MonadIO m => chan a -> m (chan a)
@@ -23,3 +23,7 @@ instance ChanWrite Chan.Chan where
 
 class ChanRead chan where
     readChan :: MonadIO m => chan a -> m a
+
+instance ChanRead Chan.Chan where
+    readChan = Chan.readChan
+    {-# INLINE readChan #-}

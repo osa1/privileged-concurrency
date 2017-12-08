@@ -5,29 +5,29 @@ module Control.Concurrent.MVar.ReadOnly
   , toReadOnlyMVar
   ) where
 
+import Control.Concurrent.MVar (MVar)
 import Control.Concurrent.MVar.Class
-import qualified UnliftIO.MVar as MVar
 
-data ReadOnlyMVar b = forall a . ReadOnlyMVar (MVar.MVar a) (a -> b)
+data ReadOnlyMVar b = forall a . ReadOnlyMVar (MVar a) (a -> b)
 
 instance Functor ReadOnlyMVar where
   fmap f (ReadOnlyMVar var f') = ReadOnlyMVar var (f . f')
 
-toReadOnlyMVar :: MVar.MVar a -> ReadOnlyMVar a
+toReadOnlyMVar :: MVar a -> ReadOnlyMVar a
 toReadOnlyMVar var = ReadOnlyMVar var id
 
 instance MVarRead ReadOnlyMVar where
-    takeMVar (ReadOnlyMVar var f) = f <$> MVar.takeMVar var
+    takeMVar (ReadOnlyMVar var f) = f <$> takeMVar var
     {-# INLINE takeMVar #-}
 
-    readMVar (ReadOnlyMVar var f) = f <$> MVar.readMVar var
+    readMVar (ReadOnlyMVar var f) = f <$> readMVar var
     {-# INLINE readMVar #-}
 
-    tryReadMVar (ReadOnlyMVar var f) = fmap f <$> MVar.tryReadMVar var
+    tryReadMVar (ReadOnlyMVar var f) = fmap f <$> tryReadMVar var
     {-# INLINE tryReadMVar #-}
 
-    tryTakeMVar (ReadOnlyMVar var f) = fmap f <$> MVar.tryTakeMVar var
+    tryTakeMVar (ReadOnlyMVar var f) = fmap f <$> tryTakeMVar var
     {-# INLINE tryTakeMVar #-}
 
-    withMVar (ReadOnlyMVar var f) w = MVar.withMVar var (w . f)
+    withMVar (ReadOnlyMVar var f) w = withMVar var (w . f)
     {-# INLINE withMVar #-}
