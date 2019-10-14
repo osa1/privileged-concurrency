@@ -42,6 +42,10 @@ Library
     Control.Concurrent.STM.TVar.Class
     Control.Concurrent.STM.TVar.ReadOnly
     Control.Concurrent.STM.TVar.WriteOnly
+    Data.IORef.Class
+    Data.IORef.ReadOnly
+    Data.IORef.ReadWrite
+    Data.IORef.WriteOnly
 
   Build-depends:
     base >= 4 && < 5,
