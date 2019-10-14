@@ -29,10 +29,6 @@ Library
     Control.Concurrent.Chan.Class
     Control.Concurrent.Chan.ReadOnly
     Control.Concurrent.Chan.WriteOnly
-    Control.Concurrent.IORef.Class
-    Control.Concurrent.IORef.ReadOnly
-    Control.Concurrent.IORef.WriteOnly
-    Control.Concurrent.IORef.ReadWrite
     Control.Concurrent.MVar.Class
     Control.Concurrent.MVar.ReadOnly
     Control.Concurrent.MVar.WriteOnly
@@ -46,6 +42,10 @@ Library
     Control.Concurrent.STM.TVar.Class
     Control.Concurrent.STM.TVar.ReadOnly
     Control.Concurrent.STM.TVar.WriteOnly
+    Data.IORef.Class
+    Data.IORef.ReadOnly
+    Data.IORef.ReadWrite
+    Data.IORef.WriteOnly
 
   Build-depends:
     base >= 4 && < 5,

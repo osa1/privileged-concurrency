@@ -1,13 +1,13 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
-module Control.Concurrent.IORef.WriteOnly
+module Data.IORef.WriteOnly
   ( WriteOnlyIORef
   , toWriteOnlyIORef
   ) where
 
-import           Control.Concurrent.IORef.Class
 import           Data.Functor.Contravariant
-import           Data.IORef                     (IORef)
+import           Data.IORef                 (IORef)
+import           Data.IORef.Class
 
 data WriteOnlyIORef a = forall b . WriteOnlyIORef (a -> b) (IORef b)
 

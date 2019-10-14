@@ -1,13 +1,13 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
-module Control.Concurrent.IORef.ReadWrite
+module Data.IORef.ReadWrite
   ( ReadWriteIORef
   , toReadWriteIORef
   ) where
 
-import           Control.Concurrent.IORef.Class
-import           Data.Bifunctor                 (first)
-import           Data.IORef                     (IORef)
+import           Data.Bifunctor   (first)
+import           Data.IORef       (IORef)
+import           Data.IORef.Class
 
 data ReadWriteIORef a = forall b. ReadWriteIORef (IORef b) (a -> b) (b -> a)
 

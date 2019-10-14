@@ -1,4 +1,4 @@
-module Control.Concurrent.IORef.Class where
+module Data.IORef.Class where
 
 import           Control.Monad.IO.Class
 import qualified UnliftIO.IORef         as IORef

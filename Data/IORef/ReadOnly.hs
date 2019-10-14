@@ -1,14 +1,15 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
-module Control.Concurrent.IORef.ReadOnly
+module Data.IORef.ReadOnly
   ( ReadOnlyIORef
   , toReadOnlyIORef
   ) where
 
-import           Control.Concurrent.IORef.Class
-import           Data.IORef                     (IORef)
+import           Data.IORef       (IORef)
+import           Data.IORef.Class
 
 data ReadOnlyIORef b = forall a. ReadOnlyIORef (IORef a) (a -> b)
+
 instance Functor ReadOnlyIORef where
   fmap f (ReadOnlyIORef ref f') = ReadOnlyIORef ref (f . f')
 
