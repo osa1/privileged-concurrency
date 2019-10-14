@@ -5,8 +5,8 @@ module Control.Concurrent.MVar.ReadOnly
   , toReadOnlyMVar
   ) where
 
-import Control.Concurrent.MVar (MVar)
-import Control.Concurrent.MVar.Class
+import           Control.Concurrent.MVar       (MVar)
+import           Control.Concurrent.MVar.Class
 
 data ReadOnlyMVar b = forall a . ReadOnlyMVar (MVar a) (a -> b)
 

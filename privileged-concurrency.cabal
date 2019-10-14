@@ -29,6 +29,10 @@ Library
     Control.Concurrent.Chan.Class
     Control.Concurrent.Chan.ReadOnly
     Control.Concurrent.Chan.WriteOnly
+    Control.Concurrent.IORef.Class
+    Control.Concurrent.IORef.ReadOnly
+    Control.Concurrent.IORef.WriteOnly
+    Control.Concurrent.IORef.ReadWrite
     Control.Concurrent.MVar.Class
     Control.Concurrent.MVar.ReadOnly
     Control.Concurrent.MVar.WriteOnly
