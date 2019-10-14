@@ -1,7 +1,7 @@
 module Data.IORef.Class where
 
-import           Control.Monad.IO.Class
-import qualified UnliftIO.IORef         as IORef
+import Control.Monad.IO.Class
+import qualified UnliftIO.IORef as IORef
 
 class IORefRead var where
   readIORef :: MonadIO m => var a -> m a

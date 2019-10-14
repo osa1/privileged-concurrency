@@ -5,8 +5,8 @@ module Data.IORef.ReadOnly
   , toReadOnlyIORef
   ) where
 
-import           Data.IORef       (IORef)
-import           Data.IORef.Class
+import Data.IORef (IORef)
+import Data.IORef.Class
 
 data ReadOnlyIORef b = forall a. ReadOnlyIORef (IORef a) (a -> b)
 

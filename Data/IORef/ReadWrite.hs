@@ -5,9 +5,9 @@ module Data.IORef.ReadWrite
   , toReadWriteIORef
   ) where
 
-import           Data.Bifunctor   (first)
-import           Data.IORef       (IORef)
-import           Data.IORef.Class
+import Data.Bifunctor (first)
+import Data.IORef (IORef)
+import Data.IORef.Class
 
 data ReadWriteIORef a = forall b. ReadWriteIORef (IORef b) (a -> b) (b -> a)
 
